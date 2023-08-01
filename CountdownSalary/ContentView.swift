@@ -13,18 +13,36 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("Year income: \(Singleton.shared.userData.yearIncome)")
-                Text("Workdays: \(Singleton.shared.userData.workdays)")
-                Text("Daily works: \(Singleton.shared.userData.dailyworks)")
-                Text("Start work time: \(Singleton.shared.userData.startWorkTime)")
-                Text("End work time: \(Singleton.shared.userData.endWorkTime)")
+                ForEach([("Year income", singleton.userData.yearIncome),
+                         ("Workdays", singleton.userData.workdays),
+                         ("Daily works", singleton.userData.dailyworks),
+                         ("Start work time", singleton.userData.startWorkTime),
+                         ("End work time", singleton.userData.endWorkTime)], id: \.0) { text, value in
+                    HStack {
+                        Text("\(text): \(value)")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Spacer()
+                        Text("만원")
+                    }
+                    .padding()
+                }
                 NavigationLink(destination: SettingView()) {
                     Text("Go to Setting")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                 }
+                .padding()
             }
+            .padding()
         }
     }
 }
+
 
 struct SettingView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -33,24 +51,39 @@ struct SettingView: View {
     @State private var dailyworksText: String = "\(Singleton.shared.userData.dailyworks)"
     @State private var startWorkTimeText: String = "\(Singleton.shared.userData.startWorkTime)"
     @State private var endWorkTimeText: String = "\(Singleton.shared.userData.endWorkTime)"
-
+    
+    private var userData: [(String, Binding<String>)] {
+        [("Year income", $yearIncomeText),
+         ("Workdays", $workdaysText),
+         ("Daily works", $dailyworksText),
+         ("Start work time", $startWorkTimeText),
+         ("End work time", $endWorkTimeText)]
+    }
+    
+    
     // 숫자로 변환 가능한지 검사하는 함수
     func isNumber(_ text: String) -> Bool {
         return Int(text) != nil
     }
-
+    
     var body: some View {
         VStack {
-            TextField("Year income", text: $yearIncomeText)
-                .keyboardType(.numberPad)
-            TextField("Workdays", text: $workdaysText)
-                .keyboardType(.numberPad)
-            TextField("Daily works", text: $dailyworksText)
-                .keyboardType(.numberPad)
-            TextField("Start work time", text: $startWorkTimeText)
-                .keyboardType(.numberPad)
-            TextField("End work time", text: $endWorkTimeText)
-                .keyboardType(.numberPad)
+            ForEach(userData, id: \.0) { placeholder, textBinding in
+                HStack {
+                    TextField(placeholder, text: textBinding)
+                        .keyboardType(.numberPad)
+                        .font(.title)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.blue, lineWidth: 1)
+                        )
+                    Text("만원")
+                        .font(.title)
+                        .fontWeight(.bold)
+                }
+            }
+            
             Button("Save") {
                 Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 0
                 Singleton.shared.userData.workdays = Int(workdaysText) ?? 0
@@ -60,8 +93,17 @@ struct SettingView: View {
                 Singleton.shared.save()
                 self.presentationMode.wrappedValue.dismiss()
             }
+            .font(.title)
+            .fontWeight(.bold)
+            .padding()
             // 모든 필드가 숫자로 변환 가능한 경우에만 버튼을 활성화
             .disabled(!isNumber(yearIncomeText) || !isNumber(workdaysText) || !isNumber(dailyworksText) || !isNumber(startWorkTimeText) || !isNumber(endWorkTimeText))
+            
+            if !isNumber(yearIncomeText) || !isNumber(workdaysText) || !isNumber(dailyworksText) || !isNumber(startWorkTimeText) || !isNumber(endWorkTimeText) {
+                Text("숫자만 넣어줘요잉")
+                    .foregroundColor(.red)
+            }
+            Spacer()
         }
         .padding()
     }
