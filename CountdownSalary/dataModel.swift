@@ -14,6 +14,7 @@ struct UserData {
     var startWorkTime: Int
     var endWorkTime: Int
     var salaryDate: Int
+    var isInitialSetupCompleted: Bool = false
 }
 
 class Singleton: ObservableObject {
@@ -28,7 +29,8 @@ class Singleton: ObservableObject {
         let startWorkTime = UserDefaults.standard.integer(forKey: "StartWorkTime")
         let endWorkTime = UserDefaults.standard.integer(forKey: "EndWorkTime")
         let salaryDate = UserDefaults.standard.integer(forKey: "salaryDate")
-        userData = UserData(yearIncome: yearIncome, workdays: workdays, dailyworks: dailyworks, startWorkTime: startWorkTime, endWorkTime: endWorkTime, salaryDate: salaryDate)
+        let isInitialSetupCompleted = UserDefaults.standard.bool(forKey: "isInitialSetupCompleted")
+        userData = UserData(yearIncome: yearIncome, workdays: workdays, dailyworks: dailyworks, startWorkTime: startWorkTime, endWorkTime: endWorkTime, salaryDate: salaryDate, isInitialSetupCompleted: isInitialSetupCompleted)
     }
     // UserDefaults의 integer(forKey:) 메서드는 값을 반환할 수 없는 경우에는 0을 반환하므로, 옵셔널 처리나 기본값을 제공하는 것은 필요하지 않습니다. 따라서 ?? 0 부분은 필요하지 않습니다.
 
@@ -40,5 +42,6 @@ class Singleton: ObservableObject {
         UserDefaults.standard.set(userData.startWorkTime, forKey: "StartWorkTime")
         UserDefaults.standard.set(userData.endWorkTime, forKey: "EndWorkTime")
         UserDefaults.standard.set(userData.salaryDate, forKey: "salaryDate")
+        UserDefaults.standard.set(userData.isInitialSetupCompleted, forKey: "isInitialSetupCompleted")
     }
 }
