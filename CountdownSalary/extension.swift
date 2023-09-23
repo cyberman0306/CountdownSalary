@@ -23,3 +23,11 @@ extension UIApplication: UIGestureRecognizerDelegate {
         return false
     }
 }
+
+// 숫자로 변환 가능하며, 0이 아니며, 0의 반복이 아닌지 확인하는 함수
+func isNumber(_ text: String) -> Bool {
+    if let number = Int(text) {
+        return number != 0 && !text.allSatisfy({ $0 == "0" })
+    }
+    return false
+}

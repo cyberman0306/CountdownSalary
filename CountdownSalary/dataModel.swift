@@ -8,12 +8,12 @@
 import Foundation
 
 struct UserData {
-    var yearIncome: Int
-    var workdays: Int
-    var dailyworks: Int
-    var startWorkTime: Int
-    var endWorkTime: Int
-    var salaryDate: Int
+    var yearIncome: Int = 5000
+    var workdays: Int = 21
+    var dailyworks: Int = 8
+    var startWorkTime: Int = 9
+    var endWorkTime: Int = 18
+    var salaryDate: Int = 25
     var isInitialSetupCompleted: Bool = false
 }
 
@@ -30,9 +30,17 @@ class Singleton: ObservableObject {
         let endWorkTime = UserDefaults.standard.integer(forKey: "EndWorkTime")
         let salaryDate = UserDefaults.standard.integer(forKey: "salaryDate")
         let isInitialSetupCompleted = UserDefaults.standard.bool(forKey: "isInitialSetupCompleted")
-        userData = UserData(yearIncome: yearIncome, workdays: workdays, dailyworks: dailyworks, startWorkTime: startWorkTime, endWorkTime: endWorkTime, salaryDate: salaryDate, isInitialSetupCompleted: isInitialSetupCompleted)
+        
+        userData = UserData(
+                yearIncome: yearIncome == 0 ? UserData().yearIncome : yearIncome,
+                workdays: workdays == 0 ? UserData().workdays : workdays,
+                dailyworks: dailyworks == 0 ? UserData().dailyworks : dailyworks,
+                startWorkTime: startWorkTime == 0 ? UserData().startWorkTime : startWorkTime,
+                endWorkTime: endWorkTime == 0 ? UserData().endWorkTime : endWorkTime,
+                salaryDate: salaryDate == 0 ? UserData().salaryDate : salaryDate,
+                isInitialSetupCompleted: isInitialSetupCompleted
+            )
     }
-    // UserDefaults의 integer(forKey:) 메서드는 값을 반환할 수 없는 경우에는 0을 반환하므로, 옵셔널 처리나 기본값을 제공하는 것은 필요하지 않습니다. 따라서 ?? 0 부분은 필요하지 않습니다.
 
 
     func save() {

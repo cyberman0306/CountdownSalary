@@ -11,57 +11,62 @@ import Combine
 struct ContentView: View {
     @ObservedObject var singleton: Singleton
     @State private var currentTime = Date()
-
+    
     var body: some View {
         let myInfo = singleton.userData
+        var dayIncome = (myInfo.yearIncome * 10000 / 12 /  myInfo.workdays)
         NavigationStack {
-            VStack {
-//                ForEach([("Year income", myInfo.yearIncome, "만원"),
-//                         ("Workdays", myInfo.workdays, "일"),
-//                         ("Daily works", myInfo.dailyworks, "시간"),
-//                         ("Start work time", myInfo.startWorkTime, "시작시간"),
-//                         ("End work time", myInfo.endWorkTime, "퇴근시간"),
-//                         ("salaryDate", myInfo.salaryDate, "월급날"),
-//                        ], id: \.0) { text, value, sort in
-//                    HStack {
-//                        Text("\(value)")
-//                            .font(.title)
-//                            .fontWeight(.bold)
-//                        //Spacer()
-//                        Text(sort)
-//                    }
-//                    .padding()
-//                }
+            VStack(alignment: .leading) {
+                //                ForEach([("Year income", myInfo.yearIncome, "만원"),
+                //                         ("Workdays", myInfo.workdays, "일"),
+                //                         ("Daily works", myInfo.dailyworks, "시간"),
+                //                         ("Start work time", myInfo.startWorkTime, "시작시간"),
+                //                         ("End work time", myInfo.endWorkTime, "퇴근시간"),
+                //                         ("salaryDate", myInfo.salaryDate, "월급날"),
+                //                        ], id: \.0) { text, value, sort in
+                //                    HStack {
+                //                        Text("\(value)")
+                //                            .font(.title)
+                //                            .fontWeight(.bold)
+                //                        //Spacer()
+                //                        Text(sort)
+                //                    }
+                //                    .padding()
+                //                }
                 Text("오늘은 \(currentTime)")
                 Spacer()
                 //일급
-                Text("오늘은 \(myInfo.yearIncome * 10000 / 12 /  myInfo.workdays )원 벌었네요")
-                // 월급 디데이
-                Text("월급날까지 \(daysUntilSalary(salaryDate: myInfo.salaryDate) ?? 0)일 남았네요")
-                            
-                //월급 초시계
-                if let timeRemaining = timeUntilSalary(salaryDate: myInfo.salaryDate) {
-                    Text("월급날까지 \(timeRemaining.days)일 \(timeRemaining.hours)시간 \(timeRemaining.minutes)분 \(timeRemaining.seconds)초 남았네요")
-                }
+                Text("오늘은 \(dayIncome)원 벌었네요😁")
+
                 
                 Spacer()
-                
-                NavigationLink(destination: SettingView()) {
-                    Text("Go to Setting")
+                // 월급 디데이
+                Text("월급날까지 \(daysUntilSalary(salaryDate: myInfo.salaryDate) ?? 0)일 남았네요🏃")
+                Spacer()
+                //월급 초시계
+                if let timeRemaining = timeUntilSalary(salaryDate: myInfo.salaryDate) {
+                    Text("월급날까지 \(timeRemaining.days)일 \(timeRemaining.hours)시간 \(timeRemaining.minutes)분 \(timeRemaining.seconds)초 남았네요⏱️")
+                }
+                Spacer()
+                HStack {
+                    Spacer()
+                    NavigationLink(destination: SettingView()) {
+                        Text("Go to Setting")
                         //.font(.title)
                         //.fontWeight(.bold)
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
+                            .padding()
+                            .background(Color.accentColor)
+                            .foregroundColor(.white)
+                            .cornerRadius(5)
+                    }
+                    .padding()
+                    .navigationViewStyle(StackNavigationViewStyle())
                 }
-                .padding()
-                .navigationViewStyle(StackNavigationViewStyle())
-
+                
             }
             .padding()
             .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
-                        self.currentTime = Date()
+                self.currentTime = Date()
             }
         }
     }
@@ -91,7 +96,7 @@ struct ContentView: View {
         let daysUntil = calendar.dateComponents([.day], from: today, to: finalTargetDate)
         return daysUntil.day
     }
-
+    
     
     func timeUntilSalary(salaryDate: Int) -> (days: Int, hours: Int, minutes: Int, seconds: Int)? {
         let calendar = Calendar.current
@@ -115,7 +120,7 @@ struct ContentView: View {
         let components = calendar.dateComponents([.day, .hour, .minute, .second], from: today, to: finalTargetDateHMS)
         return (components.day ?? 0, components.hour ?? 0, components.minute ?? 0, components.second ?? 0)
     }
-
+    
 }
 
 
@@ -129,20 +134,16 @@ struct SettingView: View {
     @State private var salaryDate: String = "\(Singleton.shared.userData.salaryDate)"
     
     private var userData: [(String, Binding<String>, String, String)] {
-            [("Year income", $yearIncomeText, "내 연봉은", "만원"),
-             ("Workdays", $workdaysText, "이번달은 며칠 일하나요", "시간"),
-             ("Daily works", $dailyworksText, "하루에 몇 시간 일하나요", "시간"),
-             ("Start work time", $startWorkTimeText, "출근 시간은", "시"),
-             ("End work time", $endWorkTimeText, "퇴근 시간은 (예시: 18시)", "시"),
-             ("Salary date", $salaryDate, "내 월급날은", "일")]
-        }
-    
-    
-    // 숫자로 변환 가능한지 검사하는 함수
-    func isNumber(_ text: String) -> Bool {
-        return Int(text) != nil
+        [("Year income", $yearIncomeText, "내 연봉은", "만원"),
+         ("Workdays", $workdaysText, "이번달은 며칠 일하나요", "시간"),
+         ("Daily works", $dailyworksText, "하루에 몇 시간 일하나요", "시간"),
+         ("Start work time", $startWorkTimeText, "출근 시간은", "시"),
+         ("End work time", $endWorkTimeText, "퇴근 시간은 (예시: 18시)", "시"),
+         ("Salary date", $salaryDate, "내 월급날은", "일")]
     }
     
+    
+
     var body: some View {
         ScrollView {
             VStack {
@@ -151,7 +152,7 @@ struct SettingView: View {
                         HStack {
                             Text(description)
                                 .font(.body)
-                               // .fontWeight(.bold)
+                            // .fontWeight(.bold)
                             //Spacer()
                         }
                         HStack {
@@ -167,43 +168,42 @@ struct SettingView: View {
                                 .frame(width: 40, height: 5)
                                 .multilineTextAlignment(.center)
                                 .padding()
-//                                .overlay(
-//                                    RoundedRectangle(cornerRadius: 5)
-//                                        .stroke(Color.accentColor, lineWidth: 0.3)
-//                                )
                                 .background(
-                                        // 밑줄을 추가
-                                        Rectangle()
-                                            .frame(height: 1)
-                                            .shadow(color: .black, radius: 1, x: 0, y: 1) // 그림자 추가
+                                    // 밑줄을 추가
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .shadow(color: .black, radius: 1, x: 0, y: 1) // 그림자 추가
                                     , alignment: .bottom)
                             Text(std)
-
+                            
                         }
-                    
+                        
                     }
                     Divider()
                 }
-                
-                Button("Save") {
-                    Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 0
-                    Singleton.shared.userData.workdays = Int(workdaysText) ?? 0
-                    Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 0
-                    Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 0
-                    Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 0
-                    Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 0
-                    Singleton.shared.save()
-                    self.presentationMode.wrappedValue.dismiss()
-                }
-                .padding()
-                .background(Color.accentColor)
-                .foregroundColor(.white)
-                .cornerRadius(5)
-                // 모든 필드가 숫자로 변환 가능한 경우에만 버튼을 활성화
-                .disabled(!isNumber(yearIncomeText) || !isNumber(workdaysText) ||
-                          !isNumber(dailyworksText) || !isNumber(startWorkTimeText)
-                          || !isNumber(endWorkTimeText))
-                
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button("Save") {
+                        Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 3500
+                        Singleton.shared.userData.workdays = Int(workdaysText) ?? 21
+                        Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 8
+                        Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 9
+                        Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 18
+                        Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 25
+                        Singleton.shared.save()
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
+                    .padding()
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(5)
+                    // 모든 필드가 숫자로 변환 가능한 경우에만 버튼을 활성화
+                    .disabled(!isNumber(yearIncomeText) || !isNumber(workdaysText) ||
+                              !isNumber(dailyworksText) || !isNumber(startWorkTimeText)
+                              || !isNumber(endWorkTimeText))
+                    
+                }.padding()
                 if !isNumber(yearIncomeText) || !isNumber(workdaysText) ||
                     !isNumber(dailyworksText) || !isNumber(startWorkTimeText) ||
                     !isNumber(endWorkTimeText) {
@@ -216,6 +216,6 @@ struct SettingView: View {
             .padding()
             .onAppear (perform : UIApplication.shared.hideKeyboard)
         }
-
+        
     }
 }
