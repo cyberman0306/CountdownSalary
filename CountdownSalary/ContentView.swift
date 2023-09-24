@@ -17,22 +17,7 @@ struct ContentView: View {
         var dayIncome = (myInfo.yearIncome * 10000 / 12 /  myInfo.workdays)
         NavigationStack {
             VStack(alignment: .leading) {
-                //                ForEach([("Year income", myInfo.yearIncome, "만원"),
-                //                         ("Workdays", myInfo.workdays, "일"),
-                //                         ("Daily works", myInfo.dailyworks, "시간"),
-                //                         ("Start work time", myInfo.startWorkTime, "시작시간"),
-                //                         ("End work time", myInfo.endWorkTime, "퇴근시간"),
-                //                         ("salaryDate", myInfo.salaryDate, "월급날"),
-                //                        ], id: \.0) { text, value, sort in
-                //                    HStack {
-                //                        Text("\(value)")
-                //                            .font(.title)
-                //                            .fontWeight(.bold)
-                //                        //Spacer()
-                //                        Text(sort)
-                //                    }
-                //                    .padding()
-                //                }
+                
                 Text("오늘은 \(currentTime)")
                 Spacer()
                 //일급
@@ -50,7 +35,7 @@ struct ContentView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    NavigationLink(destination: SettingView()) {
+                    NavigationLink(destination: SettingView(singleton: singleton)) {
                         Text("Go to Setting")
                         //.font(.title)
                         //.fontWeight(.bold)
@@ -125,113 +110,127 @@ struct ContentView: View {
 
 
 struct SettingView: View {
+    @ObservedObject var singleton: Singleton
     @Environment(\.presentationMode) var presentationMode
+    
     @State private var yearIncomeText: String = "\(Singleton.shared.userData.yearIncome)"
     @State private var workdaysText: String = "\(Singleton.shared.userData.workdays)"
     @State private var dailyworksText: String = "\(Singleton.shared.userData.dailyworks)"
     @State private var startWorkTimeText: String = "\(Singleton.shared.userData.startWorkTime)"
     @State private var endWorkTimeText: String = "\(Singleton.shared.userData.endWorkTime)"
     @State private var salaryDate: String = "\(Singleton.shared.userData.salaryDate)"
-    
+    @State private var selectedSalaryType: SalaryType = Singleton.shared.userData.salaryType
+
     private var userData: [(String, Binding<String>, String, String, [Int])] {
         [
            // ("Year income", $yearIncomeText, "내 연봉은", "만원", Array(0..<100000)),
-        ("Workdays", $workdaysText, "이번달은 며칠 일하나요", "일", Array(0..<31)),
-         ("Daily works", $dailyworksText, "하루에 몇 시간 일하나요", "시간", Array(0..<24)),
+        ("Workdays", $workdaysText, "이번달은 며칠 일하나요", "일", Array(1..<31)),
+         ("Daily works", $dailyworksText, "하루에 몇 시간 일하나요", "시간", Array(1..<24)),
          ("Start work time", $startWorkTimeText, "출근 시간은", "시", Array(0..<24)),
          ("End work time", $endWorkTimeText, "퇴근 시간은 (예시: 18시)", "시", Array(0..<24)),
          ("Salary date", $salaryDate, "내 월급날은", "일", Array(0..<28))]
     }
-    
-    
 
     var body: some View {
+        let myInfo = singleton.userData
         ScrollView {
             VStack {
-                Text("내 연봉은")
-                TextField("내 연봉은", text: $yearIncomeText)
-                    .onReceive(Just($yearIncomeText.wrappedValue)) { newValue in
-                        let filtered = newValue.filter { "0123456789".contains($0) }
-                        if filtered != newValue {
-                            $yearIncomeText.wrappedValue = filtered
-                        }
-                    }
-                    .keyboardType(.numberPad)
-                    .font(.body)
-                    .frame(width: 40, height: 5)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .background(
-                        // 밑줄을 추가
-                        Rectangle()
-                            .frame(height: 1)
-                            .shadow(color: .black, radius: 1, x: 0, y: 1) // 그림자 추가
-                        , alignment: .bottom)
-
-                
-                ForEach(userData, id: \.0) { placeholder, textBinding, description, std, limit in
-                    VStack {
-                        HStack {
-                            Text(description)
-                                .font(.body)
-                         
-                        }
-                        HStack {
-                            // String을 Int로 변환
-                            let intValue = Binding<Int>(
-                                get: {
-                                    Int(textBinding.wrappedValue) ?? 0
-                                },
-                                set: {
-                                    textBinding.wrappedValue = "\($0)"
-                                }
-                            )
-                            Picker(selection: intValue, label: Text(description)) {
-                                ForEach(limit, id: \.self) { num in
-                                    Text("\(num)").tag(num) // tag의 값을 Int로 설정
+                Picker("급여 유형 선택", selection: $selectedSalaryType) {
+                    Text("연봉").tag(SalaryType.annualSalary)
+                    Text("월급").tag(SalaryType.monthlySalary)
+                    Text("시급").tag(SalaryType.hourlyWage)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .onChange(of: selectedSalaryType) { newValue in
+                    singleton.updateSalaryType(newValue)
+                }
+                if myInfo.salaryType == .annualSalary {
+                    
+                    Text("내 연봉은")
+                    HStack {
+                        TextField("내 연봉은", text: $yearIncomeText)
+                            .onReceive(Just($yearIncomeText.wrappedValue)) { newValue in
+                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                if filtered != newValue {
+                                    $yearIncomeText.wrappedValue = filtered
                                 }
                             }
-                           .frame(height: 100)
-                           .clipped()
-                           .pickerStyle(WheelPickerStyle())
-                           
-                            Text(std)
+                            .keyboardType(.numberPad)
+                            .font(.body)
+                            .frame(width: 40, height: 5)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .background(
+                                // 밑줄을 추가
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .shadow(color: .black, radius: 1, x: 0, y: 1) // 그림자 추가
+                                , alignment: .bottom)
+                        Text("만원")
+                    }
+
+                    Divider()
+                    
+                    ForEach(userData, id: \.0) { placeholder, textBinding, description, std, limit in
+                        VStack {
+                            HStack {
+                                Text(description)
+                                    .font(.body)
+                             
+                            }
+                            HStack {
+                                // String을 Int로 변환
+                                let intValue = Binding<Int>(
+                                    get: {
+                                        Int(textBinding.wrappedValue) ?? 0
+                                    },
+                                    set: {
+                                        textBinding.wrappedValue = "\($0)"
+                                    }
+                                )
+                                Picker(selection: intValue, label: Text(description)) {
+                                    ForEach(limit, id: \.self) { num in
+                                        Text("\(num)").tag(num) // tag의 값을 Int로 설정
+                                    }
+                                }
+                               .frame(width: 50, height: 100)
+                               .clipped()
+                               .pickerStyle(WheelPickerStyle())
+                                Text(std)
+                                
+                            }
                             
                         }
-                        
+                        Divider()
                     }
-                    Divider()
-                }
-                Spacer()
-                HStack {
                     Spacer()
-                    Button("Save") {
-                        Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 3500
-                        Singleton.shared.userData.workdays = Int(workdaysText) ?? 21
-                        Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 8
-                        Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 9
-                        Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 18
-                        Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 25
-                        Singleton.shared.save()
-                        self.presentationMode.wrappedValue.dismiss()
-                    }
-                    .padding()
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
-                    .cornerRadius(5)
-                    // 모든 필드가 숫자로 변환 가능한 경우에만 버튼을 활성화
-                    .disabled(!isNumber(yearIncomeText) || !isNumber(workdaysText) ||
-                              !isNumber(dailyworksText) || !isNumber(startWorkTimeText)
-                              || !isNumber(endWorkTimeText))
+                    HStack {
+                        Spacer()
+                        Button("Save") {
+                            Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 3500
+                            Singleton.shared.userData.workdays = Int(workdaysText) ?? 21
+                            Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 8
+                            Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 9
+                            Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 18
+                            Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 25
+                            Singleton.shared.userData.salaryType = selectedSalaryType
+                            Singleton.shared.save()
+                            self.presentationMode.wrappedValue.dismiss()
+                        }
+                        .padding()
+                        .background(Color.accentColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
+                        
+                    }.padding()
                     
-                }.padding()
-                if !isNumber(yearIncomeText) || !isNumber(workdaysText) ||
-                    !isNumber(dailyworksText) || !isNumber(startWorkTimeText) ||
-                    !isNumber(endWorkTimeText) {
-                    Text("숫자만 넣어줘요잉")
-                        .foregroundColor(.red)
+                } else if myInfo.salaryType == .monthlySalary {
+                    
+                } else if myInfo.salaryType == .hourlyWage {
+                    
+                } else {
+                    Text("error!")
                 }
-                
                 
             }
             .padding()

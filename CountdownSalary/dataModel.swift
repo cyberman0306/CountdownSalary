@@ -7,7 +7,14 @@
 
 import Foundation
 
-struct UserData {
+enum SalaryType: String, Codable {
+    case annualSalary // 연봉
+    case monthlySalary // 월급
+    case hourlyWage // 시급
+}
+
+struct UserData: Codable {
+    var salaryType: SalaryType = .annualSalary
     var yearIncome: Int = 5000
     var workdays: Int = 21
     var dailyworks: Int = 8
@@ -15,6 +22,7 @@ struct UserData {
     var endWorkTime: Int = 18
     var salaryDate: Int = 25
     var isInitialSetupCompleted: Bool = false
+    
 }
 
 class Singleton: ObservableObject {
@@ -23,33 +31,48 @@ class Singleton: ObservableObject {
     @Published var userData: UserData
 
     private init() {
-        let yearIncome = UserDefaults.standard.integer(forKey: "YearIncome")
-        let workdays = UserDefaults.standard.integer(forKey: "Workdays")
-        let dailyworks = UserDefaults.standard.integer(forKey: "Dailyworks")
-        let startWorkTime = UserDefaults.standard.integer(forKey: "StartWorkTime")
-        let endWorkTime = UserDefaults.standard.integer(forKey: "EndWorkTime")
-        let salaryDate = UserDefaults.standard.integer(forKey: "salaryDate")
-        let isInitialSetupCompleted = UserDefaults.standard.bool(forKey: "isInitialSetupCompleted")
+        let load = UserDefaults.standard
+        let yearIncome = load.integer(forKey: "YearIncome")
+        let workdays = load.integer(forKey: "Workdays")
+        let dailyworks = load.integer(forKey: "Dailyworks")
+        let startWorkTime = load.integer(forKey: "StartWorkTime")
+        let endWorkTime = load.integer(forKey: "EndWorkTime")
+        let salaryDate = load.integer(forKey: "salaryDate")
+        let isInitialSetupCompleted = load.bool(forKey: "isInitialSetupCompleted")
+        let salaryTypeString = load.string(forKey: "salaryType") ?? SalaryType.annualSalary.rawValue
+        let salaryType = SalaryType(rawValue: salaryTypeString) ?? .annualSalary
+               
+        //SalaryType enum은 String을 원시 값으로 가지고 있으므로, 이 값을 UserDefaults에 저장하거나 읽을 때는 rawValue를 사용해야 합니다.
         
         userData = UserData(
-                yearIncome: yearIncome == 0 ? UserData().yearIncome : yearIncome,
-                workdays: workdays == 0 ? UserData().workdays : workdays,
-                dailyworks: dailyworks == 0 ? UserData().dailyworks : dailyworks,
-                startWorkTime: startWorkTime == 0 ? UserData().startWorkTime : startWorkTime,
-                endWorkTime: endWorkTime == 0 ? UserData().endWorkTime : endWorkTime,
-                salaryDate: salaryDate == 0 ? UserData().salaryDate : salaryDate,
-                isInitialSetupCompleted: isInitialSetupCompleted
-            )
+                    salaryType: salaryType,
+                    yearIncome: yearIncome == 0 ? UserData().yearIncome : yearIncome,
+                    workdays: workdays == 0 ? UserData().workdays : workdays,
+                    dailyworks: dailyworks == 0 ? UserData().dailyworks : dailyworks,
+                    startWorkTime: startWorkTime == 0 ? UserData().startWorkTime : startWorkTime,
+                    endWorkTime: endWorkTime == 0 ? UserData().endWorkTime : endWorkTime,
+                    salaryDate: salaryDate == 0 ? UserData().salaryDate : salaryDate,
+                    isInitialSetupCompleted: isInitialSetupCompleted
+                )
+        
+ 
     }
 
 
     func save() {
-        UserDefaults.standard.set(userData.yearIncome, forKey: "YearIncome")
-        UserDefaults.standard.set(userData.workdays, forKey: "Workdays")
-        UserDefaults.standard.set(userData.dailyworks, forKey: "Dailyworks")
-        UserDefaults.standard.set(userData.startWorkTime, forKey: "StartWorkTime")
-        UserDefaults.standard.set(userData.endWorkTime, forKey: "EndWorkTime")
-        UserDefaults.standard.set(userData.salaryDate, forKey: "salaryDate")
-        UserDefaults.standard.set(userData.isInitialSetupCompleted, forKey: "isInitialSetupCompleted")
+        let save = UserDefaults.standard
+        save.set(userData.yearIncome, forKey: "YearIncome")
+        save.set(userData.workdays, forKey: "Workdays")
+        save.set(userData.dailyworks, forKey: "Dailyworks")
+        save.set(userData.startWorkTime, forKey: "StartWorkTime")
+        save.set(userData.endWorkTime, forKey: "EndWorkTime")
+        save.set(userData.salaryDate, forKey: "salaryDate")
+        save.set(userData.isInitialSetupCompleted, forKey: "isInitialSetupCompleted")
+        save.set(userData.salaryType.rawValue, forKey: "salaryType")
+    }
+    
+    func updateSalaryType(_ type: SalaryType) {
+        userData.salaryType = type
+        save()
     }
 }
