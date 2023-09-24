@@ -53,10 +53,6 @@ struct InitialSetupView: View {
                                 .frame(width: 40, height: 5)
                                 .multilineTextAlignment(.center)
                                 .padding()
-                            //                                .overlay(
-                            //                                    RoundedRectangle(cornerRadius: 5)
-                            //                                        .stroke(Color.accentColor, lineWidth: 0.3)
-                            //                                )
                                 .background(
                                     // 밑줄을 추가
                                     Rectangle()
