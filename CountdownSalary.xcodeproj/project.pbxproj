@@ -12,6 +12,7 @@
 		E4BF87972A77E755002EA2C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4BF87962A77E755002EA2C4 /* Assets.xcassets */; };
 		E4BF879A2A77E755002EA2C4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4BF87992A77E755002EA2C4 /* Preview Assets.xcassets */; };
 		E4BF87A12A77E820002EA2C4 /* dataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF87A02A77E820002EA2C4 /* dataModel.swift */; };
+		E4D5D12C2ACA8DBA000AFC6A /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D5D12B2ACA8DBA000AFC6A /* SettingView.swift */; };
 		E4EBE3E82ABEE5B80051550D /* InitialSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EBE3E72ABEE5B80051550D /* InitialSetupView.swift */; };
 		E4EBE3EA2ABEED2B0051550D /* extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EBE3E92ABEED2B0051550D /* extension.swift */; };
 /* End PBXBuildFile section */
@@ -23,6 +24,7 @@
 		E4BF87962A77E755002EA2C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E4BF87992A77E755002EA2C4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E4BF87A02A77E820002EA2C4 /* dataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dataModel.swift; sourceTree = "<group>"; };
+		E4D5D12B2ACA8DBA000AFC6A /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
 		E4EBE3E72ABEE5B80051550D /* InitialSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSetupView.swift; sourceTree = "<group>"; };
 		E4EBE3E92ABEED2B0051550D /* extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,6 +61,7 @@
 			children = (
 				E4BF87922A77E753002EA2C4 /* CountdownSalaryApp.swift */,
 				E4BF87942A77E753002EA2C4 /* ContentView.swift */,
+				E4D5D12B2ACA8DBA000AFC6A /* SettingView.swift */,
 				E4BF87A02A77E820002EA2C4 /* dataModel.swift */,
 				E4EBE3E72ABEE5B80051550D /* InitialSetupView.swift */,
 				E4EBE3E92ABEED2B0051550D /* extension.swift */,
@@ -149,6 +152,7 @@
 				E4BF87952A77E753002EA2C4 /* ContentView.swift in Sources */,
 				E4BF87932A77E753002EA2C4 /* CountdownSalaryApp.swift in Sources */,
 				E4BF87A12A77E820002EA2C4 /* dataModel.swift in Sources */,
+				E4D5D12C2ACA8DBA000AFC6A /* SettingView.swift in Sources */,
 				E4EBE3EA2ABEED2B0051550D /* extension.swift in Sources */,
 				E4EBE3E82ABEE5B80051550D /* InitialSetupView.swift in Sources */,
 			);

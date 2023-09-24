@@ -55,7 +55,7 @@ class Singleton: ObservableObject {
                     salaryType: salaryType,
                     yearIncome: yearIncome == 0 ? UserData().yearIncome : yearIncome,
                     monthlyIncome: monthlyIncome == 0 ? UserData().monthlyIncome : monthlyIncome,
-                    hourlyIncome: monthlyIncome == 0 ? UserData().hourlyIncome : monthlyIncome,
+                    hourlyIncome: hourlyIncome == 0 ? UserData().hourlyIncome : hourlyIncome,
                     workdays: workdays == 0 ? UserData().workdays : workdays,
                     dailyworks: dailyworks == 0 ? UserData().dailyworks : dailyworks,
                     startWorkTime: startWorkTime == 0 ? UserData().startWorkTime : startWorkTime,
