@@ -98,7 +98,7 @@ struct InitialSetupView: View {
                 }
             }
             .padding()
-            .onAppear (perform : UIApplication.shared.hideKeyboard)
+            //.onAppear (perform : UIApplication.shared.hideKeyboard)
         }
     }
 }

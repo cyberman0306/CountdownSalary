@@ -15,8 +15,8 @@ struct ContentView: View {
         var hourStdDayIncome = (myInfo.hourlyIncome *  myInfo.monthlyWorkHours)
         NavigationStack {
             VStack(alignment: .leading) {
-                
                 Text("오늘은 \(currentTime)")
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
                 
                 if myInfo.salaryType == .annualSalary {
@@ -27,7 +27,8 @@ struct ContentView: View {
                     Text("오늘은 \(monthStdDayIncome)원 벌었네요😁")
                 } else if myInfo.salaryType == .hourlyWage {
                     //시급
-                    Text("오늘은 \(hourStdDayIncome)원 벌었네요😁")
+                    Text("이번달은 \(hourStdDayIncome)원 벌었네요😁")
+                    // 시급의 경우 한달기준인지 하루기준인지 디스플레이 기준을 정해야함
                 }
                 Spacer()
                 // 월급 디데이
@@ -38,25 +39,17 @@ struct ContentView: View {
                     Text("월급날까지 \(timeRemaining.days)일 \(timeRemaining.hours)시간 \(timeRemaining.minutes)분 \(timeRemaining.seconds)초 남았네요⏱️")
                 }
                 Spacer()
-                HStack {
-                    Spacer()
-                    NavigationLink(destination: SettingView(singleton: singleton)) {
-                        Text("Go to Setting")
-                        //.font(.title)
-                        //.fontWeight(.bold)
-                            .padding()
-                            .background(Color.accentColor)
-                            .foregroundColor(.white)
-                            .cornerRadius(5)
-                    }
-                    .padding()
-                    .navigationViewStyle(StackNavigationViewStyle())
-                }
-                
             }
             .padding()
             .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
                 self.currentTime = Date()
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: SettingView(singleton: singleton)) {
+                        Text("설정")
+                    }.navigationViewStyle(StackNavigationViewStyle())
+                }
             }
         }
     }

@@ -103,25 +103,6 @@ struct SettingView: View {
                         Divider()
                     }
                     Spacer()
-                    HStack {
-                        Spacer()
-                        Button("Save") {
-                            Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 3500
-                            Singleton.shared.userData.workdays = Int(workdaysText) ?? 21
-                            Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 8
-                            Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 9
-                            Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 18
-                            Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 25
-                            Singleton.shared.userData.salaryType = selectedSalaryType
-                            Singleton.shared.save()
-                            self.presentationMode.wrappedValue.dismiss()
-                        }
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                        
-                    }.padding()
                     
                 } else if myInfo.salaryType == .monthlySalary {
                     Text("내 월급은")
@@ -182,26 +163,7 @@ struct SettingView: View {
                         Divider()
                     }
                     Spacer()
-                    HStack {
-                        Spacer()
-                        Button("Save") {
-                            Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 3500
-                            Singleton.shared.userData.monthlyIncome = Int(monthlyIncomeText) ?? 235
-                            Singleton.shared.userData.workdays = Int(workdaysText) ?? 21
-                            Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 8
-                            Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 9
-                            Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 18
-                            Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 25
-                            Singleton.shared.userData.salaryType = selectedSalaryType
-                            Singleton.shared.save()
-                            self.presentationMode.wrappedValue.dismiss()
-                        }
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                        
-                    }.padding()
+                    
                 } else if myInfo.salaryType == .hourlyWage {
                     Text("내 시급은")
                     HStack {
@@ -258,34 +220,37 @@ struct SettingView: View {
                         Divider()
                     }
                     Spacer()
-                    HStack {
-                        Spacer()
-                        Button("Save") {
-                            Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 3500
-                            Singleton.shared.userData.monthlyIncome = Int(monthlyIncomeText) ?? 235
-                            Singleton.shared.userData.hourlyIncome = Int(hourlyIncomeText) ?? 235
-                            Singleton.shared.userData.monthlyWorkHours = Int(monthlyWorkHours) ?? 160
-                            Singleton.shared.userData.workdays = Int(workdaysText) ?? 21
-                            Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 8
-                            Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 9
-                            Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 18
-                            Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 25
-                            Singleton.shared.userData.salaryType = selectedSalaryType
-                            Singleton.shared.save()
-                            self.presentationMode.wrappedValue.dismiss()
-                        }
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                        
-                    }.padding()
                 } else {
                     Text("error!")
                 }
             }
             .padding()
-            .onAppear (perform : UIApplication.shared.hideKeyboard)
+            
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    saveData()
+                }) {
+                    Text("저장")
+                }
+            }
         }
     }
+    
+    func saveData() {
+        Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 3500
+        Singleton.shared.userData.monthlyIncome = Int(monthlyIncomeText) ?? 235
+        Singleton.shared.userData.hourlyIncome = Int(hourlyIncomeText) ?? 235
+        Singleton.shared.userData.monthlyWorkHours = Int(monthlyWorkHours) ?? 160
+        Singleton.shared.userData.workdays = Int(workdaysText) ?? 21
+        Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 8
+        Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 9
+        Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 18
+        Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 25
+        Singleton.shared.userData.salaryType = selectedSalaryType
+        Singleton.shared.save()
+        self.presentationMode.wrappedValue.dismiss()
+    }
+
 }
