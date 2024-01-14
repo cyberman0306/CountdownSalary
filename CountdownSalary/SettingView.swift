@@ -28,7 +28,7 @@ struct SettingView: View {
          ("Daily works", $dailyworksText, "하루에 몇 시간 일하나요", "시간", Array(1..<24)),
          ("Daily works", $monthlyWorkHours, "한달에 몇 시간 일하나요", "시간", Array(1..<720)),
          ("Start work time", $startWorkTimeText, "출근 시간은", "시", Array(0..<24)),
-         ("End work time", $endWorkTimeText, "퇴근 시간은 (예시: 18시)", "시", Array(0..<24)),
+         ("End work time", $endWorkTimeText, "퇴근 시간은 (예시: 18시)", "시", Array(0..<25)),
          ("Salary date", $salaryDate, "내 월급날은", "일", Array(0..<28))]
     }
     var body: some View {
@@ -36,7 +36,7 @@ struct SettingView: View {
         ScrollView {
             VStack {
                 Picker("급여 유형 선택", selection: $selectedSalaryType) {
-                    Text("연봉").tag(SalaryType.annualSalary)
+                    //Text("연봉").tag(SalaryType.annualSalary)
                     Text("월급").tag(SalaryType.monthlySalary)
                     Text("시급").tag(SalaryType.hourlyWage)
                 }
@@ -57,14 +57,14 @@ struct SettingView: View {
                             }
                             .keyboardType(.numberPad)
                             .font(.body)
-                            .frame(width: 40, height: 5)
-                            .multilineTextAlignment(.center)
+                            //.frame(width: 40, height: 5)
+                            .multilineTextAlignment(.trailing)
                             .padding()
                             .background(
                                 // 밑줄을 추가
                                 Rectangle()
                                     .frame(height: 1)
-                                    .shadow(color: .black, radius: 1, x: 0, y: 1) // 그림자 추가
+                                    //.shadow(color: .black, radius: 1, x: 0, y: 1) // 그림자 추가
                                 , alignment: .bottom)
                         Text("만원")
                     }

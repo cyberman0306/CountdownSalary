@@ -19,7 +19,7 @@ struct InitialSetupView: View {
     @State private var salaryDate: String = "\(Singleton.shared.userData.salaryDate)"
     private var userData: [(String, Binding<String>, String, String)] {
         [("Year income", $yearIncomeText, "내 연봉은", "만원"),
-         ("Workdays", $workdaysText, "이번달은 며칠 일하나요", "시간"),
+         ("Workdays", $workdaysText, "이번달은 며칠 일하나요", "일"),
          ("Daily works", $dailyworksText, "하루에 몇 시간 일하나요", "시간"),
          ("Start work time", $startWorkTimeText, "출근 시간은", "시"),
          ("End work time", $endWorkTimeText, "퇴근 시간은 (예시: 18시)", "시"),
@@ -28,19 +28,22 @@ struct InitialSetupView: View {
     
     
     var body: some View {
-        ScrollView {
+        
             VStack {
-                Text("월급 카운트다운을 위해 내 정보를 입력해주세요")
-                    .padding()
+                Spacer()
+                
+                //Text("월급 카운트다운을 위해 내 정보를 입력해주세요").padding()
                 ForEach(userData, id: \.0) { placeholder, textBinding, description, std in
                     VStack {
                         HStack {
                             Text(description)
                                 .font(.body)
-                            // .fontWeight(.bold)
-                            //Spacer()
+                             .fontWeight(.bold)
+                            Spacer()
                         }
                         HStack {
+                            Spacer()
+                            
                             TextField(placeholder, text: textBinding)
                                 .onReceive(Just(textBinding.wrappedValue)) { newValue in
                                     let filtered = newValue.filter { "0123456789".contains($0) }
@@ -50,14 +53,14 @@ struct InitialSetupView: View {
                                 }
                                 .keyboardType(.numberPad)
                                 .font(.body)
-                                .frame(width: 40, height: 5)
-                                .multilineTextAlignment(.center)
+                                //.frame(width: 40, height: 5)
+                                .multilineTextAlignment(.trailing)
                                 .padding()
                                 .background(
                                     // 밑줄을 추가
                                     Rectangle()
                                         .frame(height: 1)
-                                        .shadow(color: .black, radius: 1, x: 0, y: 1) // 그림자 추가
+                                        //.shadow(color: .black, radius: 1, x: 0, y: 1) // 그림자 추가
                                     , alignment: .bottom)
                             Text(std)
                             
@@ -67,39 +70,45 @@ struct InitialSetupView: View {
                     Divider()
                 }
                 Spacer()
-                HStack {
-                    Spacer()
-                    Button("Save") {
-                        Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 0
-                        Singleton.shared.userData.workdays = Int(workdaysText) ?? 0
-                        Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 0
-                        Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 0
-                        Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 0
-                        Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 0
-                        Singleton.shared.userData.isInitialSetupCompleted = true
-                        Singleton.shared.save()
-                        }
-                    .padding()
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
-                    .cornerRadius(5)
-                    // 모든 필드가 숫자로 변환 가능한 경우에만 버튼을 활성화
-                    .disabled(!isNumber(yearIncomeText) || !isNumber(workdaysText) ||
-                              !isNumber(dailyworksText) || !isNumber(startWorkTimeText)
-                              || !isNumber(endWorkTimeText))
-
-                }.padding()
+                
+                
                 
                 if !isNumber(yearIncomeText) || !isNumber(workdaysText) ||
                     !isNumber(dailyworksText) || !isNumber(startWorkTimeText) ||
                     !isNumber(endWorkTimeText) {
-                    Text("숫자만 넣어줘요잉")
+                    Text("숫자만 입력해주세요")
                         .foregroundColor(.red)
                 }
             }
             .padding()
-            //.onAppear (perform : UIApplication.shared.hideKeyboard)
-        }
+            
+            
+        
+        
+        HStack {
+            //Spacer()
+            Button("Save") {
+                Singleton.shared.userData.yearIncome = Int(yearIncomeText) ?? 0
+                Singleton.shared.userData.workdays = Int(workdaysText) ?? 0
+                Singleton.shared.userData.dailyworks = Int(dailyworksText) ?? 0
+                Singleton.shared.userData.startWorkTime = Int(startWorkTimeText) ?? 0
+                Singleton.shared.userData.endWorkTime = Int(endWorkTimeText) ?? 0
+                Singleton.shared.userData.salaryDate = Int(salaryDate) ?? 0
+                Singleton.shared.userData.isInitialSetupCompleted = true
+                Singleton.shared.save()
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.accentColor)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            // 모든 필드가 숫자로 변환 가능한 경우에만 버튼을 활성화
+            .disabled(!isNumber(yearIncomeText) || !isNumber(workdaysText) ||
+                      !isNumber(dailyworksText) || !isNumber(startWorkTimeText)
+                      || !isNumber(endWorkTimeText))
+            //Spacer()
+        
+        }.padding()
     }
 }
 

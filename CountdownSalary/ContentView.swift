@@ -21,22 +21,29 @@ struct ContentView: View {
                 
                 if myInfo.salaryType == .annualSalary {
                     //연봉
-                    Text("오늘은 \(YearStdDayIncome)원 벌었네요😁")
+                    Text("😁오늘은 \(YearStdDayIncome)원 벌었네요")
+                    
+                    Spacer()
+                    Text("오늘 번 시급 \(YearStdDayIncome / (myInfo.endWorkTime - myInfo.startWorkTime))원")
+                    Text("오늘 번 분급 \(YearStdDayIncome / (myInfo.endWorkTime - myInfo.startWorkTime) / 60)원")
+                    Text("오늘 번 초급 \(YearStdDayIncome / (myInfo.endWorkTime - myInfo.startWorkTime) / 60 / 60)원")
+                    
                 } else if myInfo.salaryType == .monthlySalary {
                     //월급
-                    Text("오늘은 \(monthStdDayIncome)원 벌었네요😁")
+                    Text("😁오늘은 \(monthStdDayIncome)원 벌었네요")
                 } else if myInfo.salaryType == .hourlyWage {
                     //시급
-                    Text("이번달은 \(hourStdDayIncome)원 벌었네요😁")
+                    Text("😁이번달은 \(hourStdDayIncome)원 벌었네요")
                     // 시급의 경우 한달기준인지 하루기준인지 디스플레이 기준을 정해야함
                 }
+                
                 Spacer()
                 // 월급 디데이
-                Text("월급날까지 \(daysUntilSalary(salaryDate: myInfo.salaryDate) ?? 0)일 남았네요🏃")
+                Text("🏃월급날까지 앞으로 \(daysUntilSalary(salaryDate: myInfo.salaryDate) ?? 0)일")
                 Spacer()
                 //월급 초시계
                 if let timeRemaining = timeUntilSalary(salaryDate: myInfo.salaryDate) {
-                    Text("월급날까지 \(timeRemaining.days)일 \(timeRemaining.hours)시간 \(timeRemaining.minutes)분 \(timeRemaining.seconds)초 남았네요⏱️")
+                    Text("⏱️월급날까지 앞으로 \(timeRemaining.days)일 \(timeRemaining.hours)시간 \(timeRemaining.minutes)분 \(timeRemaining.seconds)초")
                 }
                 Spacer()
             }
@@ -93,7 +100,7 @@ struct ContentView: View {
             targetDateComponents.month = currentMonth + 1
         }
         
-        guard var finalTargetDateHMS = calendar.date(from: targetDateComponents) else { return nil }
+        guard let finalTargetDateHMS = calendar.date(from: targetDateComponents) else { return nil }
         
         // 두 날짜 간의 차이를 계산합니다.
         let components = calendar.dateComponents([.day, .hour, .minute, .second], from: today, to: finalTargetDateHMS)
