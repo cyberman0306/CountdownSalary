@@ -12,19 +12,19 @@ struct countupView: View {
     @State var targetValue: Int = 0
     @State var offset: [CGFloat] = [0, 0, 0, 0, 0, 0, 0, 0]
     @State private var timer: Timer?
-    @State private var dailyIncome: String = ""  // 하루 수입 입력값
-    @State private var workingHours: String = "" // 하루 일하는 시간 입력값
+    @State private var dailyIncome: String = "150000"  // 하루 수입 입력값
+    @State private var workingHours: String = "8" // 하루 일하는 시간 입력값
     @State private var increment: Double = 0.0   // 초당 증가값
     
     var body: some View {
         VStack(spacing: 40) {
             Spacer()
             HStack{
-                Text("내 하루 수입 ").font(.largeTitle).bold()
-                TextField("1000", text: $dailyIncome)
+                Text("하루 수입 ").font(.largeTitle).bold()
+                TextField("", text: $dailyIncome).font(.title).bold()
                     .keyboardType(.numberPad)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 100)
+                    .frame(width: 150)
                     .onChange(of: dailyIncome) { _ in calculateIncrement() }
                     .overlay {
                         RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 5)
@@ -32,8 +32,8 @@ struct countupView: View {
                 Text("원").font(.largeTitle).bold()
             }
             HStack{
-                Text("하루 근무 시간 ").font(.largeTitle).bold()
-                TextField("8", text: $workingHours)
+                Text("하루 근무 ").font(.largeTitle).bold()
+                TextField("", text: $workingHours).font(.title).bold()
                     .keyboardType(.numberPad)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 50)
@@ -42,6 +42,10 @@ struct countupView: View {
                         RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 5)
                     }
                 Text("시간").font(.largeTitle).bold()
+            }
+            HStack{
+                Text("초급 \(Int(round(increment))) 원").font(.largeTitle).bold()
+                 
             }
             Spacer()
             HStack {
@@ -65,6 +69,7 @@ struct countupView: View {
         .padding()
         .onAppear {
             startCounting()
+            calculateIncrement()
         }
         .onDisappear {
             stopCounting()
