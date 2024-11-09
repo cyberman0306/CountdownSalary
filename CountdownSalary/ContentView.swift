@@ -109,3 +109,8 @@ struct ContentView: View {
     
 }
 
+
+#Preview {
+    @ObservedObject var singleton = Singleton.shared
+    ContentView(singleton: singleton)
+}
