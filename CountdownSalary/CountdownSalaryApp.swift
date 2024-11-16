@@ -9,10 +9,11 @@ import SwiftUI
 
 @main
 struct CountdownSalaryApp: App {
-    
+    @StateObject private var data = CountupData()
     var body: some Scene {
         WindowGroup {
-            countupView()
+            CountupView()
+                .environmentObject(data)
         }
     }
 }
